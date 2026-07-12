@@ -57,7 +57,8 @@
     check();
   }
 
-  // ---------- Hero: dot-matrix куб (объект из дизайн-системы) ----------
+  // ---------- Hero: морфящееся облако точек (авторский объект из набора) ----------
+  // Сфера («система») → звезда-сигнал (мотив марки) → орбита. Придаём хаосу форму.
   function setupHero() {
     var hero = document.querySelector('.ds-hero');
     if (!hero) return;
@@ -70,19 +71,38 @@
     var ctx = canvas.getContext('2d');
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var w = 0, h = 0, cx = 0, cy = 0, scale = 0, dim = 1, running = true;
+    var M = 440;
 
-    // Оболочка куба из точек: рёбра (accent) + грани (белые).
-    var pts = [], N = 8;
-    for (var i = 0; i <= N; i++)
-      for (var j = 0; j <= N; j++)
-        for (var k = 0; k <= N; k++) {
-          if (i === 0 || i === N || j === 0 || j === N || k === 0 || k === N) {
-            var extreme = ((i === 0 || i === N) ? 1 : 0) + ((j === 0 || j === N) ? 1 : 0) + ((k === 0 || k === N) ? 1 : 0);
-            pts.push({ x: i / N - 0.5, y: j / N - 0.5, z: k / N - 0.5, edge: extreme >= 2 });
-          }
-        }
+    function sphere() {
+      var a = [], ga = Math.PI * (3 - Math.sqrt(5)), i;
+      for (i = 0; i < M; i++) {
+        var y = 1 - (i / (M - 1)) * 2, rr = Math.sqrt(Math.max(0, 1 - y * y)), th = i * ga;
+        a.push([Math.cos(th) * rr * 0.5, y * 0.5, Math.sin(th) * rr * 0.5]);
+      }
+      return a;
+    }
+    function burst() {
+      var axes = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1],[0.7,0.7,0],[-0.7,-0.7,0],[0.7,-0.7,0],[-0.7,0.7,0]];
+      var a = [], per = Math.ceil(M / axes.length), i;
+      for (i = 0; i < M; i++) {
+        var ax = axes[i % axes.length], t = 0.07 + (Math.floor(i / axes.length) / per) * 0.45;
+        a.push([ax[0] * t, ax[1] * t, ax[2] * t]);
+      }
+      return a;
+    }
+    function torus() {
+      var a = [], R = 0.36, rr = 0.11, i;
+      for (i = 0; i < M; i++) {
+        var u = (i / M) * Math.PI * 6, v = i * 2.3999;
+        a.push([(R + rr * Math.cos(v)) * Math.cos(u), rr * Math.sin(v), (R + rr * Math.cos(v)) * Math.sin(u)]);
+      }
+      return a;
+    }
+    var shapes = [sphere(), burst(), torus()];
+    var accent = []; for (var ai = 0; ai < M; ai++) accent.push(ai % 6 === 0);
 
-    var rotX = -0.5, targetOX = 0, targetOY = 0, ox = 0, oy = 0, t = 0;
+    var rotX = -0.5, targetOX = 0, targetOY = 0, ox = 0, oy = 0, rot = -0.6;
+    var from = 0, to = 1, morphT = 0, hold = 70;
 
     function resize() {
       w = hero.clientWidth; h = hero.clientHeight;
@@ -92,37 +112,40 @@
       var wide = w > 760, side = Math.min(w, h);
       cx = w * 0.5;
       cy = wide ? h * 0.36 : h * 0.30;
-      scale = side * (wide ? 0.5 : 0.42);
+      scale = side * (wide ? 0.52 : 0.44);
       dim = wide ? 1 : 0.85;
     }
 
-    function render(ay, ax) {
+    function render(ay, ax, e) {
       ctx.clearRect(0, 0, w, h);
+      var A = shapes[from], B = shapes[to];
       var cy1 = Math.cos(ay), sy1 = Math.sin(ay), cx1 = Math.cos(ax), sx1 = Math.sin(ax);
       var arr = [], i;
-      for (i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        var X = p.x * cy1 + p.z * sy1, Z = -p.x * sy1 + p.z * cy1;
-        var Y = p.y * cx1 - Z * sx1; Z = p.y * sx1 + Z * cx1;
+      for (i = 0; i < M; i++) {
+        var px = A[i][0] + (B[i][0] - A[i][0]) * e;
+        var py = A[i][1] + (B[i][1] - A[i][1]) * e;
+        var pz = A[i][2] + (B[i][2] - A[i][2]) * e;
+        var X = px * cy1 + pz * sy1, Z = -px * sy1 + pz * cy1;
+        var Y = py * cx1 - Z * sx1; Z = py * sx1 + Z * cx1;
         var persp = 2.6 / (2.6 - Z);
-        arr.push({ sx: cx + X * scale * persp, sy: cy + Y * scale * persp, z: Z, persp: persp, edge: p.edge });
+        arr.push({ sx: cx + X * scale * persp, sy: cy + Y * scale * persp, z: Z, persp: persp, a: accent[i] });
       }
-      arr.sort(function (a, b) { return a.z - b.z; });
+      arr.sort(function (p, q) { return p.z - q.z; });
       var glow = dim === 1;
       for (i = 0; i < arr.length; i++) {
-        var q = arr[i], d = (q.z + 0.9) / 1.8;
-        var r = Math.max(1.0, 2.6 * q.persp * (0.4 + d * 0.8));
-        var a = Math.min(0.22 + d * 0.62, 0.9) * dim;
-        if (q.edge) {
+        var s = arr[i], d = (s.z + 0.9) / 1.8;
+        var r = Math.max(1.0, 2.4 * s.persp * (0.4 + d * 0.8));
+        var al = Math.min(0.22 + d * 0.6, 0.9) * dim;
+        if (s.a) {
           ctx.shadowColor = 'rgba(229,83,43,0.9)';
-          ctx.shadowBlur = glow ? 7 * q.persp : 0;
-          ctx.fillStyle = 'rgba(229,83,43,' + a + ')';
+          ctx.shadowBlur = glow ? 7 * s.persp : 0;
+          ctx.fillStyle = 'rgba(229,83,43,' + al + ')';
         } else {
           ctx.shadowBlur = 0;
-          ctx.fillStyle = 'rgba(240,238,232,' + (a * 0.5) + ')';
+          ctx.fillStyle = 'rgba(240,238,232,' + (al * 0.5) + ')';
         }
         ctx.beginPath();
-        ctx.arc(q.sx, q.sy, r, 0, 6.283);
+        ctx.arc(s.sx, s.sy, r, 0, 6.283);
         ctx.fill();
       }
       ctx.shadowBlur = 0;
@@ -130,9 +153,15 @@
 
     function frame() {
       if (!running) return;
-      t += 0.0032;
+      rot += 0.0028;
       ox += (targetOX - ox) * 0.06; oy += (targetOY - oy) * 0.06;
-      render(t + ox, rotX + oy);
+      if (hold > 0) hold--;
+      else {
+        morphT += 0.018;
+        if (morphT >= 1) { morphT = 0; from = to; to = (to + 1) % shapes.length; hold = 80; }
+      }
+      var e = morphT * morphT * (3 - 2 * morphT);
+      render(rot + ox, rotX + oy, e);
       requestAnimationFrame(frame);
     }
 
@@ -144,7 +173,7 @@
 
     resize();
     window.addEventListener('resize', resize);
-    if (reduce) { render(-0.6, rotX); return; } // статичный объект
+    if (reduce) { render(-0.6, rotX, 0); return; } // статичный объект (сфера)
     document.addEventListener('visibilitychange', function () {
       running = !document.hidden;
       if (running) requestAnimationFrame(frame);
