@@ -127,5 +127,21 @@
     requestAnimationFrame(frame);
   }
 
-  ready(function () { setupReveal(); setupHero(); });
+  // ---------- Форма: фокус на первой ошибке + состояние отправки ----------
+  function setupForm() {
+    var form = document.querySelector('form[action*="formsubmit"]');
+    if (!form) return;
+    // Фокус на первом невалидном поле (подстраховка к нативной валидации).
+    form.addEventListener('invalid', function (e) {
+      var first = form.querySelector(':invalid');
+      if (first) { e.preventDefault(); first.focus(); }
+    }, true);
+    // На валидной отправке — блокируем кнопку и меняем подпись.
+    form.addEventListener('submit', function () {
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.setAttribute('disabled', ''); btn.classList.add('no-arrow'); btn.textContent = 'Отправляем…'; }
+    });
+  }
+
+  ready(function () { setupReveal(); setupHero(); setupForm(); });
 })();
