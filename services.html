@@ -16,13 +16,16 @@
 <nav class="ds-nav">
   <div class="wrap">
     <a href="/" class="ds-brand">KULBATSKII <span>AI · АВТОМАТИЗАЦИЯ</span></a>
-    <div class="ds-nav-links">
+    <button class="ds-nav-toggle" type="button" aria-expanded="false" aria-controls="ds-nav-links" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="ds-nav-links" id="ds-nav-links">
       <a href="/services" class="active">Услуги</a>
       <a href="/cases">Кейсы</a>
       <a href="/team">Команда</a>
       <a href="/contact">Контакты</a>
+      <a href="/contact" class="btn btn-primary btn-sm no-arrow">Обсудить пилот</a>
     </div>
-    <a href="/contact" class="btn btn-primary btn-sm no-arrow">Обсудить пилот</a>
   </div>
 </nav>
 
@@ -205,5 +208,6 @@
   </div>
 </footer>
 
+<script src="/nav.js" defer></script>
 </body>
 </html>

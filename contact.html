@@ -16,13 +16,16 @@
 <nav class="ds-nav">
   <div class="wrap">
     <a href="/" class="ds-brand">KULBATSKII <span>AI · АВТОМАТИЗАЦИЯ</span></a>
-    <div class="ds-nav-links">
+    <button class="ds-nav-toggle" type="button" aria-expanded="false" aria-controls="ds-nav-links" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="ds-nav-links" id="ds-nav-links">
       <a href="/services">Услуги</a>
       <a href="/cases">Кейсы</a>
       <a href="/team">Команда</a>
       <a href="/contact" class="active">Контакты</a>
+      <a href="/contact" class="btn btn-primary btn-sm no-arrow">Обсудить пилот</a>
     </div>
-    <a href="/contact" class="btn btn-primary btn-sm no-arrow">Обсудить пилот</a>
   </div>
 </nav>
 
@@ -75,7 +78,7 @@
       <div class="form-field"><label>ТЕЛЕФОН</label><input type="tel" name="phone" placeholder="+7 (___) ___-__-__"></div>
       <div class="form-field full"><label>СООБЩЕНИЕ *</label><textarea name="message" placeholder="Расскажите про задачу: какой процесс хотите автоматизировать, сколько людей задействовано, объёмы документов..." required></textarea></div>
       <div class="form-field full">
-        <label class="consent"><input type="checkbox" checked required> <span>Принимаю условия оферты и согласие на обработку персональных данных.</span></label>
+        <label class="consent"><input type="checkbox" required> <span>Принимаю условия оферты и согласие на обработку персональных данных.</span></label>
       </div>
       <div class="full" style="margin-top:8px;"><button type="submit" class="btn btn-primary">Отправить</button></div>
     </form>
@@ -153,5 +156,6 @@
   </div>
 </footer>
 
+<script src="/nav.js" defer></script>
 </body>
 </html>
