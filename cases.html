@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Кейсы · KULBATSKII</title>
+<meta name="description" content="Рабочие прототипы: AI-генератор КП, генератор ТКП, RAG-поиск. Все на общей платформе.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<nav class="ds-nav">
+  <div class="wrap">
+    <a href="/" class="ds-brand">KULBATSKII <span>AI · АВТОМАТИЗАЦИЯ</span></a>
+    <div class="ds-nav-links">
+      <a href="/services">Услуги</a>
+      <a href="/cases" class="active">Кейсы</a>
+      <a href="/team">Команда</a>
+      <a href="/contact">Контакты</a>
+    </div>
+    <a href="/contact" class="btn btn-primary btn-sm no-arrow">Обсудить пилот</a>
+  </div>
+</nav>
+
+<main>
+
+<header class="ds-hero">
+  <div class="wrap">
+    <span class="meta meta-line meta--accent">КЕЙСЫ · ЧТО У НАС УЖЕ РАБОТАЕТ</span>
+    <h1 style="margin-top:20px;">Рабочие прототипы<br><em>в активной разработке</em></h1>
+    <p class="lead" style="margin-top:20px;">Не идеи в роудмапе — работающий код на нашей платформе. Прямо сейчас готовы к развёртыванию в формате короткого пилота.</p>
+  </div>
+</header>
+
+<section class="ds-block">
+  <div class="wrap">
+    <div class="ds-block-head">
+      <span class="meta meta--accent">01 · АКТИВНЫЕ ПРОТОТИПЫ</span>
+      <h2>Что <em>уже сделано</em></h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div class="case-card">
+        <div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="badge">Прототип</span>
+            <span class="status info">AI · многоагентная архитектура</span>
+          </div>
+          <h3>AI-генератор коммерческих предложений</h3>
+          <p class="case-desc">Многоагентный генератор КП из техзаданий. На входе — ТЗ заказчика (PDF/DOCX), на выходе — готовое коммерческое предложение по шаблонам исполнителя с расчётом по актуальной базе материалов и логистики. Локальный деплой, фиксированная стоимость пилота.</p>
+          <p class="case-desc">Архитектура: парсер ТЗ + композер КП + верификатор. Все цифры проверяются по базе исполнителя. Работает с русским языком, форматами PDF/Excel/Word.</p>
+        </div>
+        <div class="case-result">
+          <div class="case-result-label">Эффект</div>
+          <div class="case-result-value">Подготовка КП<br>с 5–7 дней до 1–2 дней</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="badge">Действующий инструмент</span>
+            <span class="status ok">Отгружено несколько документов</span>
+          </div>
+          <h3>Генератор технико-коммерческих предложений</h3>
+          <p class="case-desc">Действующий инструмент-шаблон для генерации ТКП в отрасли пожарной безопасности. Шаблоны под СПЗ, СОУЭ, АПТ. AI-заполнение по входным данным заказчика, расчёты, юридические формулировки.</p>
+          <p class="case-desc">Переиспользуемый инструмент — после первого внедрения каждый следующий ТКП готовится в разы быстрее. Адаптируется под другие отрасли.</p>
+        </div>
+        <div class="case-result">
+          <div class="case-result-label">Эффект</div>
+          <div class="case-result-value">Снижение трудозатрат<br>на подготовку ТКП в 3–5 раз</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="badge">Активная разработка</span>
+            <span class="status info">RAG · bge-m3 + reranker</span>
+          </div>
+          <h3>AI-поиск по технической документации</h3>
+          <p class="case-desc">Боевой пайплайн внутри диагностической SaaS-платформы. Embeddings bge-m3, reranker, целевые метрики Recall@5 ≥ 0.85. Переупаковывается под корпоративный поиск с минимальными доработками.</p>
+          <p class="case-desc">Работает с регламентами, инструкциями, паспортами оборудования. Естественный язык на входе — релевантный ответ со ссылкой на исходный документ.</p>
+        </div>
+        <div class="case-result">
+          <div class="case-result-label">Эффект</div>
+          <div class="case-result-value">Поиск по архивам<br>с часов до секунд</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ds-block">
+  <div class="wrap">
+    <div class="ds-block-head">
+      <span class="meta meta--accent">02 · ПЛАТФОРМА</span>
+      <h2>Общая <em>основа</em></h2>
+      <p>Все три прототипа работают на собственной платформе многоагентной оркестрации (inter-agent communication). Каждый следующий инструмент строится поверх уже работающей основы — быстрее и дешевле первого.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value">3</div>
+        <div class="stat-label">РАБОЧИХ ПРОТОТИПА</div>
+        <div class="stat-desc">КП, ТКП, RAG-поиск — все в активной разработке на общей платформенной основе.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">2–6</div>
+        <div class="stat-label">НЕДЕЛЬ ДО ПИЛОТА</div>
+        <div class="stat-desc">От первого разговора до работающего инструмента на ваших данных.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">ЛОКАЛЬНЫЙ ДЕПЛОЙ</div>
+        <div class="stat-desc">On-prem или в вашем закрытом контуре — данные не уходят за периметр.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ds-block">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <span class="meta meta--accent">ДЕМО ПО ЗАПРОСУ</span>
+        <h2 style="margin-top:14px;">Хотите <em>увидеть</em>?</h2>
+        <p class="lead" style="margin-top:14px;">Покажем демо любого из прототипов на скриншерах или видеозвонке. Без обязательств. Если ваша задача похожа — обсудим формат пилота.</p>
+        <div class="ds-demo" style="margin-top:28px;">
+          <a class="btn btn-primary" href="/contact">Запросить демо</a>
+        </div>
+      </div>
+      <div class="cta-contacts">
+        <div>
+          <div class="cta-contact-label">EMAIL</div>
+          <a href="mailto:apk181818@gmail.com" class="cta-contact-value">apk181818@gmail.com</a>
+        </div>
+        <div>
+          <div class="cta-contact-label">ТЕЛЕФОН</div>
+          <a href="tel:+79854527692" class="cta-contact-value">+7 985 452-76-92</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ds-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand-name">KULBATSKII <span>AI · АВТОМАТИЗАЦИЯ</span></div>
+        <p class="foot-tag">Один процесс за раз. Измеримый результат. AI-инструменты для производства и B2B.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Сайт</h4>
+        <ul>
+          <li><a href="/">Главная</a></li>
+          <li><a href="/services">Услуги</a></li>
+          <li><a href="/cases">Кейсы</a></li>
+          <li><a href="/team">Команда</a></li>
+          <li><a href="/contact">Контакты</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="mailto:apk181818@gmail.com">apk181818@gmail.com</a></li>
+          <li><a href="tel:+79854527692">+7 985 452-76-92</a></li>
+          <li>Telegram · WhatsApp</li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Технологии</h4>
+        <ul>
+          <li>On-prem / закрытый контур</li>
+          <li>1С · Диадок · СБИС</li>
+          <li>ERP · CRM · ЭДО</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 KULBATSKII · Александр Кульбацкий</span>
+      <span>Москва · Россия</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
