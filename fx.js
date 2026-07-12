@@ -15,7 +15,7 @@
     var targets = Array.prototype.slice.call(document.querySelectorAll(
       '.ds-block .ds-block-head, .ds-block .card, .ds-block .stat-card, ' +
       '.ds-block .member-card, .ds-block .row, .ds-block .cta-band, ' +
-      '.ds-block .list-bare, .ds-block .tags'
+      '.ds-block .list-bare, .ds-block .tags, .statement h2'
     ));
     if (!targets.length) return;
 

@@ -128,8 +128,8 @@ code{font-family:var(--font-mono);font-size:0.85em;color:var(--accent);}
 }
 a:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
-.ds-hero{padding:88px 0 64px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
-.section-paper.ds-hero{border-bottom-color:var(--paper-line);}
+.ds-hero{padding:88px 0 64px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;background:radial-gradient(70% 60% at 88% -10%,rgba(229,83,43,0.16),transparent 60%);}
+.section-paper.ds-hero{background:none;border-bottom-color:var(--paper-line);}
 .ds-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(to right,var(--line-faint) 1px,transparent 1px),linear-gradient(to bottom,var(--line-faint) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;mask-image:radial-gradient(120% 90% at 85% 0%,black 0%,transparent 65%);-webkit-mask-image:radial-gradient(120% 90% at 85% 0%,black 0%,transparent 65%);}
 .section-paper.ds-hero::before{background-image:linear-gradient(to right,var(--paper-line-faint) 1px,transparent 1px),linear-gradient(to bottom,var(--paper-line-faint) 1px,transparent 1px);}
 .ds-hero .wrap{position:relative;z-index:1;}
@@ -162,6 +162,40 @@ a:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--
 @media (prefers-reduced-motion:reduce){
   .fx .reveal{opacity:1!important;transform:none!important;transition:none!important;}
 }
+
+/* ---------- bento grid (разнокалиберные карточки) ---------- */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;grid-auto-flow:dense;}
+@media (max-width:900px){.bento{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.bento{grid-template-columns:1fr;}}
+.bento .card{margin:0;}
+.bento-feature{grid-column:span 2;grid-row:span 2;}
+@media (max-width:900px){.bento-feature{grid-column:1/-1;grid-row:auto;}}
+
+.card-feature{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:24px;min-height:240px;
+  background:radial-gradient(120% 130% at 100% 0%,rgba(229,83,43,0.20) 0%,rgba(229,83,43,0.04) 34%,transparent 60%),var(--ink-3);
+  border-color:var(--accent-line);}
+.card-feature::after{content:"";position:absolute;inset:0;background-image:linear-gradient(to right,var(--line-faint) 1px,transparent 1px),linear-gradient(to bottom,var(--line-faint) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(90% 90% at 100% 0%,#000,transparent 70%);-webkit-mask-image:radial-gradient(90% 90% at 100% 0%,#000,transparent 70%);pointer-events:none;}
+.card-feature>*{position:relative;z-index:1;}
+.card-feature h3{font-family:var(--font-display);font-weight:600;font-size:clamp(24px,2.6vw,34px);letter-spacing:-0.025em;line-height:1.08;}
+.card-feature h3 em{font-style:normal;color:var(--accent);}
+.card-feature .card-lead{color:var(--muted);font-size:.98rem;line-height:1.5;margin-top:12px;}
+.card-icon-lg svg{width:34px;height:34px;fill:none;stroke:var(--accent);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ---------- marquee (бегущая строка) ---------- */
+.marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0;background:var(--ink-2);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
+.marquee-track{display:flex;align-items:center;width:max-content;animation:marquee 34s linear infinite;}
+.marquee:hover .marquee-track{animation-play-state:paused;}
+.marquee-item{display:inline-flex;align-items:center;gap:34px;padding-right:34px;font-family:var(--font-display);font-weight:600;font-size:clamp(20px,2.4vw,32px);letter-spacing:-0.02em;color:var(--muted);white-space:nowrap;}
+.marquee-item::after{content:"✳";color:var(--accent);font-size:.62em;}
+@keyframes marquee{to{transform:translateX(-50%);}}
+@media (prefers-reduced-motion:reduce){.marquee-track{animation:none;}}
+
+/* ---------- statement band (крупный акцент) ---------- */
+.statement{position:relative;overflow:hidden;background:radial-gradient(60% 120% at 12% 50%,rgba(229,83,43,0.12),transparent 60%);}
+.statement h2{font-family:var(--font-display);font-weight:300;font-size:clamp(38px,7vw,92px);letter-spacing:-0.04em;line-height:1.0;max-width:16ch;}
+.statement h2 em{font-style:normal;color:var(--accent);}
+.statement .meta{margin-bottom:22px;}
 .row-list{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;}
 .section-paper .row-list{border-color:var(--paper-line-strong);}
 .row--desc{grid-template-columns:auto 1fr;align-items:start;padding:24px 22px;}
