@@ -5,7 +5,7 @@
 
 /* ---------- TOKENS ---------- */
 :root {
-  --ink:#0a0d14; --ink-2:#141821; --ink-3:#1d212c; --ink-4:#252a37;
+  --ink:#0a0e18; --ink-2:#15203b; --ink-3:#1c2a49; --ink-4:#283a60;
   --paper:#f5f3ee; --paper-2:#ebe8e1; --paper-3:#dfdcd4;
   --line:rgba(245,243,238,0.10); --line-strong:rgba(245,243,238,0.18); --line-faint:rgba(245,243,238,0.05);
   --paper-line:rgba(22,22,29,0.10); --paper-line-strong:rgba(22,22,29,0.18); --paper-line-faint:rgba(22,22,29,0.05);
