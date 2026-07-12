@@ -57,9 +57,8 @@
     check();
   }
 
-  // ---------- Hero: warp-streaks (в духе data-flythrough) ----------
+  // ---------- Hero: dot-matrix куб (объект из дизайн-системы) ----------
   function setupHero() {
-    if (reduce) return;
     var hero = document.querySelector('.ds-hero');
     if (!hero) return;
 
@@ -70,56 +69,82 @@
 
     var ctx = canvas.getContext('2d');
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0, h = 0, cx = 0, cy = 0, running = true;
-    var N = 170;
-    var pts = [];
+    var w = 0, h = 0, cx = 0, cy = 0, scale = 0, dim = 1, running = true;
+
+    // Оболочка куба из точек: рёбра (accent) + грани (белые).
+    var pts = [], N = 7;
+    for (var i = 0; i <= N; i++)
+      for (var j = 0; j <= N; j++)
+        for (var k = 0; k <= N; k++) {
+          if (i === 0 || i === N || j === 0 || j === N || k === 0 || k === N) {
+            var extreme = ((i === 0 || i === N) ? 1 : 0) + ((j === 0 || j === N) ? 1 : 0) + ((k === 0 || k === N) ? 1 : 0);
+            pts.push({ x: i / N - 0.5, y: j / N - 0.5, z: k / N - 0.5, edge: extreme >= 2 });
+          }
+        }
+
+    var rotX = -0.5, targetOX = 0, targetOY = 0, ox = 0, oy = 0, t = 0;
 
     function resize() {
       w = hero.clientWidth; h = hero.clientHeight;
       canvas.width = w * dpr; canvas.height = h * dpr;
       canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cx = w * 0.5; cy = h * 0.42;
+      var wide = w > 760, side = Math.min(w, h);
+      cx = wide ? w * 0.74 : w * 0.80;
+      cy = wide ? h * 0.46 : h * 0.24;
+      scale = wide ? side * 0.33 : side * 0.26;
+      dim = wide ? 1 : 0.5;
     }
-    function spawn(p) {
-      p.x = Math.random() * 2 - 1;
-      p.y = Math.random() * 2 - 1;
-      p.z = Math.random() * 0.9 + 0.25;
-      p.pz = p.z;
-      p.accent = Math.random() < 0.09;
+
+    function render(ay, ax) {
+      ctx.clearRect(0, 0, w, h);
+      var cy1 = Math.cos(ay), sy1 = Math.sin(ay), cx1 = Math.cos(ax), sx1 = Math.sin(ax);
+      var arr = [], i;
+      for (i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        var X = p.x * cy1 + p.z * sy1, Z = -p.x * sy1 + p.z * cy1;
+        var Y = p.y * cx1 - Z * sx1; Z = p.y * sx1 + Z * cx1;
+        var persp = 2.6 / (2.6 - Z);
+        arr.push({ sx: cx + X * scale * persp, sy: cy + Y * scale * persp, z: Z, persp: persp, edge: p.edge });
+      }
+      arr.sort(function (a, b) { return a.z - b.z; });
+      var glow = dim === 1;
+      for (i = 0; i < arr.length; i++) {
+        var q = arr[i], d = (q.z + 0.9) / 1.8;
+        var r = Math.max(1.0, 2.6 * q.persp * (0.4 + d * 0.8));
+        var a = Math.min(0.22 + d * 0.62, 0.9) * dim;
+        if (q.edge) {
+          ctx.shadowColor = 'rgba(229,83,43,0.9)';
+          ctx.shadowBlur = glow ? 7 * q.persp : 0;
+          ctx.fillStyle = 'rgba(229,83,43,' + a + ')';
+        } else {
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = 'rgba(240,238,232,' + (a * 0.5) + ')';
+        }
+        ctx.beginPath();
+        ctx.arc(q.sx, q.sy, r, 0, 6.283);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
     }
-    for (var i = 0; i < N; i++) { var p = {}; spawn(p); pts.push(p); }
 
     function frame() {
       if (!running) return;
-      ctx.clearRect(0, 0, w, h);
-      var reach = Math.max(w, h) * 0.55;
-      for (var i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        p.pz = p.z;
-        p.z -= 0.006;
-        if (p.z <= 0.05) { spawn(p); continue; }
-        var sx = cx + (p.x / p.z) * reach;
-        var sy = cy + (p.y / p.z) * reach;
-        var px = cx + (p.x / p.pz) * reach;
-        var py = cy + (p.y / p.pz) * reach;
-        if (sx < -60 || sx > w + 60 || sy < -60 || sy > h + 60) continue;
-        var depth = 1 - p.z;                 // 0 (далеко) .. 1 (близко)
-        var alpha = Math.min(depth * 0.5, 0.34);
-        ctx.strokeStyle = p.accent
-          ? 'rgba(229,83,43,' + alpha + ')'
-          : 'rgba(240,238,232,' + (alpha * 0.8) + ')';
-        ctx.lineWidth = Math.max(depth * 1.5, 0.4);
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(sx, sy);
-        ctx.stroke();
-      }
+      t += 0.0032;
+      ox += (targetOX - ox) * 0.06; oy += (targetOY - oy) * 0.06;
+      render(t + ox, rotX + oy);
       requestAnimationFrame(frame);
     }
 
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      targetOX = ((e.clientX - rect.left) / rect.width - 0.5) * 0.9;
+      targetOY = ((e.clientY - rect.top) / rect.height - 0.5) * 0.7;
+    });
+
     resize();
     window.addEventListener('resize', resize);
+    if (reduce) { render(-0.6, rotX); return; } // статичный объект
     document.addEventListener('visibilitychange', function () {
       running = !document.hidden;
       if (running) requestAnimationFrame(frame);
