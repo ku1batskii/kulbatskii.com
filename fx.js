@@ -72,7 +72,7 @@
     var w = 0, h = 0, cx = 0, cy = 0, scale = 0, dim = 1, running = true;
 
     // Оболочка куба из точек: рёбра (accent) + грани (белые).
-    var pts = [], N = 7;
+    var pts = [], N = 8;
     for (var i = 0; i <= N; i++)
       for (var j = 0; j <= N; j++)
         for (var k = 0; k <= N; k++) {
@@ -90,10 +90,10 @@
       canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       var wide = w > 760, side = Math.min(w, h);
-      cx = wide ? w * 0.74 : w * 0.80;
-      cy = wide ? h * 0.46 : h * 0.24;
-      scale = wide ? side * 0.33 : side * 0.26;
-      dim = wide ? 1 : 0.5;
+      cx = w * 0.5;
+      cy = wide ? h * 0.36 : h * 0.30;
+      scale = side * (wide ? 0.5 : 0.42);
+      dim = wide ? 1 : 0.85;
     }
 
     function render(ay, ax) {
