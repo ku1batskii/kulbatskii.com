@@ -1,18 +1,18 @@
 # kulbatskii.com
 
-Сайт KULBATSKII — AI-автоматизация для производства и B2B. Статический сайт, без сборки: 5 HTML-страниц + один CSS-файл.
+Сайт KULBATSKII — разработка цифровых инструментов под задачу бизнеса (веб-сервисы, боты, автоматизация, интеграции, прототипы и MVP, AI-функции). Статический сайт, без сборки: 5 HTML-страниц + один CSS-файл.
 
 ## Структура
 
 ```
-index.html      — главная
-services.html   — услуги
-cases.html      — кейсы
-team.html       — команда
-contact.html    — контакты (форма через FormSubmit)
-css/main.css    — вся дизайн-система
+index.html       — главная
+services.html    — услуги («что можем разработать»)
+experience.html  — опыт и направления
+team.html        — команда
+contact.html     — контакты (форма через FormSubmit)
+css/main.css     — вся дизайн-система
 favicon.svg
-vercel.json     — чистые URL без .html (/services вместо /services.html)
+vercel.json      — чистые URL без .html (/services вместо /services.html)
 robots.txt, sitemap.xml
 ```
 
