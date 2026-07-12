@@ -127,21 +127,53 @@
     requestAnimationFrame(frame);
   }
 
-  // ---------- Форма: фокус на первой ошибке + состояние отправки ----------
+  // ---------- Форма: валидация, отправка через AJAX, success-состояние ----------
   function setupForm() {
     var form = document.querySelector('form[action*="formsubmit"]');
     if (!form) return;
-    // Фокус на первом невалидном поле (подстраховка к нативной валидации).
-    form.addEventListener('invalid', function (e) {
-      var first = form.querySelector(':invalid');
-      if (first) { e.preventDefault(); first.focus(); }
-    }, true);
-    // На валидной отправке — блокируем кнопку и меняем подпись.
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      // Нативная валидация: показывает ошибки и фокусирует первое невалидное поле.
+      if (!form.reportValidity()) return;
       var btn = form.querySelector('button[type="submit"]');
       if (btn) { btn.setAttribute('disabled', ''); btn.classList.add('no-arrow'); btn.textContent = 'Отправляем…'; }
+      var url = form.getAttribute('action').replace('formsubmit.co/', 'formsubmit.co/ajax/');
+      fetch(url, { method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(form) })
+        .then(function (r) { return r.json(); })
+        .then(function () { showSuccess(); })
+        .catch(function () { form.submit(); }); // фолбэк — обычная отправка
     });
+    function showSuccess() {
+      var box = document.createElement('div');
+      box.className = 'form-success';
+      box.setAttribute('role', 'status');
+      box.innerHTML = '<strong>Спасибо — заявка отправлена.</strong><br>Мы прочитаем её и свяжемся, чтобы уточнить детали и предложить следующий шаг.';
+      form.replaceWith(box);
+      box.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+    }
   }
 
-  ready(function () { setupReveal(); setupHero(); setupForm(); });
+  // ---------- Фирменный курсор-кольцо ----------
+  function setupCursor() {
+    if (reduce) return;
+    if (!(window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches)) return;
+    var ring = document.createElement('div');
+    ring.className = 'fx-ring';
+    ring.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(ring);
+    var x = window.innerWidth / 2, y = window.innerHeight / 2, rx = x, ry = y, shown = false;
+    var HOVER = 'a,button,input,textarea,select,label,.card';
+    window.addEventListener('mousemove', function (e) {
+      x = e.clientX; y = e.clientY;
+      if (!shown) { shown = true; ring.classList.add('is-visible'); }
+      ring.classList.toggle('is-hover', !!(e.target.closest && e.target.closest(HOVER)));
+    });
+    (function loop() {
+      rx += (x - rx) * 0.2; ry += (y - ry) * 0.2;
+      ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  ready(function () { setupReveal(); setupHero(); setupForm(); setupCursor(); });
 })();
