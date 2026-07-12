@@ -1,0 +1,131 @@
+/* KULBATSKII — визуальные эффекты: анимированный герой + reveal при скролле.
+   Прогрессивное улучшение: без JS и при prefers-reduced-motion всё видно и статично. */
+(function () {
+  var root = document.documentElement;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('fx');
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  // ---------- Scroll reveal ----------
+  function setupReveal() {
+    var targets = Array.prototype.slice.call(document.querySelectorAll(
+      '.ds-block .ds-block-head, .ds-block .card, .ds-block .stat-card, ' +
+      '.ds-block .member-card, .ds-block .row, .ds-block .cta-band, ' +
+      '.ds-block .list-bare, .ds-block .tags'
+    ));
+    if (!targets.length) return;
+
+    if (reduce) {
+      targets.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+
+    targets.forEach(function (el) { el.classList.add('reveal'); });
+
+    // Мягкая лесенка внутри одного контейнера (карточки в сетке).
+    var groups = [];
+    targets.forEach(function (el) {
+      var g = null;
+      for (var i = 0; i < groups.length; i++) { if (groups[i].parent === el.parentNode) { g = groups[i]; break; } }
+      if (!g) { g = { parent: el.parentNode, items: [] }; groups.push(g); }
+      g.items.push(el);
+    });
+    groups.forEach(function (g) {
+      g.items.forEach(function (el, i) { el.style.transitionDelay = Math.min(i * 55, 220) + 'ms'; });
+    });
+
+    // Проверка по позиции: всё, что в зоне видимости или выше её, гарантированно
+    // становится видимым — ничего не может «застрять» невидимым (в т.ч. при переходе по якорю).
+    var ticking = false;
+    function check() {
+      ticking = false;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      for (var i = 0; i < targets.length; i++) {
+        var el = targets[i];
+        if (el.classList.contains('is-visible')) continue;
+        if (el.getBoundingClientRect().top < vh * 0.9) el.classList.add('is-visible');
+      }
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('load', check);
+    check();
+  }
+
+  // ---------- Hero: warp-streaks (в духе data-flythrough) ----------
+  function setupHero() {
+    if (reduce) return;
+    var hero = document.querySelector('.ds-hero');
+    if (!hero) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.className = 'fx-hero-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    hero.insertBefore(canvas, hero.firstChild);
+
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = 0, h = 0, cx = 0, cy = 0, running = true;
+    var N = 170;
+    var pts = [];
+
+    function resize() {
+      w = hero.clientWidth; h = hero.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cx = w * 0.5; cy = h * 0.42;
+    }
+    function spawn(p) {
+      p.x = Math.random() * 2 - 1;
+      p.y = Math.random() * 2 - 1;
+      p.z = Math.random() * 0.9 + 0.25;
+      p.pz = p.z;
+      p.accent = Math.random() < 0.09;
+    }
+    for (var i = 0; i < N; i++) { var p = {}; spawn(p); pts.push(p); }
+
+    function frame() {
+      if (!running) return;
+      ctx.clearRect(0, 0, w, h);
+      var reach = Math.max(w, h) * 0.55;
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        p.pz = p.z;
+        p.z -= 0.006;
+        if (p.z <= 0.05) { spawn(p); continue; }
+        var sx = cx + (p.x / p.z) * reach;
+        var sy = cy + (p.y / p.z) * reach;
+        var px = cx + (p.x / p.pz) * reach;
+        var py = cy + (p.y / p.pz) * reach;
+        if (sx < -60 || sx > w + 60 || sy < -60 || sy > h + 60) continue;
+        var depth = 1 - p.z;                 // 0 (далеко) .. 1 (близко)
+        var alpha = Math.min(depth * 0.5, 0.34);
+        ctx.strokeStyle = p.accent
+          ? 'rgba(229,83,43,' + alpha + ')'
+          : 'rgba(240,238,232,' + (alpha * 0.8) + ')';
+        ctx.lineWidth = Math.max(depth * 1.5, 0.4);
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(sx, sy);
+        ctx.stroke();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', function () {
+      running = !document.hidden;
+      if (running) requestAnimationFrame(frame);
+    });
+    requestAnimationFrame(frame);
+  }
+
+  ready(function () { setupReveal(); setupHero(); });
+})();
