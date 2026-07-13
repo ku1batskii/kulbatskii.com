@@ -108,7 +108,7 @@
         var py = cy + (p.y / tz) * reach;
         if (sx < -80 || sx > w + 80 || sy < -80 || sy > h + 80) continue;
         var depth = 1 - p.z;                  // 0 (далеко) .. 1 (близко)
-        var alpha = Math.min(depth * 0.95, 0.85);
+        var alpha = Math.min(depth * 0.7, 0.6);
         ctx.strokeStyle = p.accent
           ? 'rgba(229,83,43,' + alpha + ')'
           : 'rgba(240,238,232,' + (alpha * 0.85) + ')';
