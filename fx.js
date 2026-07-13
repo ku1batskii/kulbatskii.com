@@ -57,79 +57,6 @@
     check();
   }
 
-  // ---------- Hero: звёздное поле («падающие звёзды») ----------
-  // Частицы летят из точки схода наружу, оставляя короткие световые следы —
-  // эффект гиперпространства/звёздного дождя. Заполняет всю область героя.
-  function setupHero() {
-    if (reduce) return; // при prefers-reduced-motion движения нет
-    var hero = document.querySelector('.ds-hero');
-    if (!hero) return;
-
-    var canvas = document.createElement('canvas');
-    canvas.className = 'fx-hero-canvas';
-    canvas.setAttribute('aria-hidden', 'true');
-    hero.insertBefore(canvas, hero.firstChild);
-
-    var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0, h = 0, cx = 0, cy = 0, running = true;
-    var N = 220;
-    var pts = [];
-
-    function resize() {
-      w = hero.clientWidth; h = hero.clientHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cx = w * 0.5; cy = h * 0.42;
-    }
-    function spawn(p) {
-      p.x = Math.random() * 2 - 1;
-      p.y = Math.random() * 2 - 1;
-      p.z = Math.random() * 0.9 + 0.25;
-      p.pz = p.z;
-      p.accent = Math.random() < 0.12;
-    }
-    for (var i = 0; i < N; i++) { var p = {}; spawn(p); pts.push(p); }
-
-    ctx.lineCap = 'round';
-    function frame() {
-      if (!running) return;
-      ctx.clearRect(0, 0, w, h);
-      var reach = Math.max(w, h) * 0.6;
-      for (var i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        p.z -= 0.005;
-        if (p.z <= 0.05) { spawn(p); continue; }
-        var tz = p.z + 0.05;                  // «хвост» звезды — позади текущей точки
-        var sx = cx + (p.x / p.z) * reach;
-        var sy = cy + (p.y / p.z) * reach;
-        var px = cx + (p.x / tz) * reach;
-        var py = cy + (p.y / tz) * reach;
-        if (sx < -80 || sx > w + 80 || sy < -80 || sy > h + 80) continue;
-        var depth = 1 - p.z;                  // 0 (далеко) .. 1 (близко)
-        var alpha = Math.min(depth * 0.5, 0.4);
-        ctx.strokeStyle = p.accent
-          ? 'rgba(229,83,43,' + alpha + ')'
-          : 'rgba(240,238,232,' + (alpha * 0.85) + ')';
-        ctx.lineWidth = Math.max(depth * 2.2, 0.6);
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(sx, sy);
-        ctx.stroke();
-      }
-      requestAnimationFrame(frame);
-    }
-
-    resize();
-    window.addEventListener('resize', resize);
-    document.addEventListener('visibilitychange', function () {
-      running = !document.hidden;
-      if (running) requestAnimationFrame(frame);
-    });
-    requestAnimationFrame(frame);
-  }
-
   // ---------- Форма: валидация, отправка через AJAX, success-состояние ----------
   function setupForm() {
     var form = document.querySelector('form[action*="formsubmit"]');
@@ -178,5 +105,5 @@
     })();
   }
 
-  ready(function () { setupReveal(); setupHero(); setupForm(); setupCursor(); });
+  ready(function () { setupReveal(); setupForm(); setupCursor(); });
 })();
