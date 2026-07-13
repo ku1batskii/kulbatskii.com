@@ -99,7 +99,7 @@
       var reach = Math.max(w, h) * 0.6;
       for (var i = 0; i < pts.length; i++) {
         var p = pts[i];
-        p.z -= 0.008;
+        p.z -= 0.005;
         if (p.z <= 0.05) { spawn(p); continue; }
         var tz = p.z + 0.05;                  // «хвост» звезды — позади текущей точки
         var sx = cx + (p.x / p.z) * reach;
