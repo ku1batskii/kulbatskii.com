@@ -138,14 +138,9 @@ a:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--
 .ds-hero{position:relative;overflow:hidden;isolation:isolate;min-height:86vh;min-height:86svh;display:flex;flex-direction:column;justify-content:center;padding:104px 0 60px;border-bottom:1px solid var(--line);}
 .ds-hero--home{justify-content:flex-end;}
 .section-paper.ds-hero{border-bottom-color:var(--paper-line);}
-/* очень медленно и плавно плавающее оранжевое свечение на фоне героя */
-.ds-hero::before{content:"";position:absolute;z-index:0;top:50%;left:50%;width:min(130%,1100px);aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at center,rgba(229,83,43,0.30) 0%,rgba(229,83,43,0.13) 26%,rgba(229,83,43,0.04) 48%,transparent 64%);filter:blur(36px);pointer-events:none;animation:heroGlow 34s ease-in-out infinite alternate;will-change:transform;}
-.section-paper.ds-hero::before{opacity:.55;}
-/* тонкая сетка поверх свечения */
+/* тонкая сетка на фоне героя (без свечения) */
 .ds-hero::after{content:"";position:absolute;inset:0;z-index:0;background-image:linear-gradient(to right,var(--line-faint) 1px,transparent 1px),linear-gradient(to bottom,var(--line-faint) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;mask-image:radial-gradient(110% 100% at 50% 40%,black 0%,transparent 72%);-webkit-mask-image:radial-gradient(110% 100% at 50% 40%,black 0%,transparent 72%);}
 .section-paper.ds-hero::after{background-image:linear-gradient(to right,var(--paper-line-faint) 1px,transparent 1px),linear-gradient(to bottom,var(--paper-line-faint) 1px,transparent 1px);}
-@keyframes heroGlow{0%{transform:translate(-58%,-56%) scale(1);}50%{transform:translate(-44%,-46%) scale(1.16);}100%{transform:translate(-54%,-42%) scale(1.06);}}
-@media (prefers-reduced-motion:reduce){.ds-hero::before{animation:none;transform:translate(-50%,-52%) scale(1.08);}}
 .ds-hero .wrap{position:relative;z-index:1;}
 
 .ds-block{padding:64px 0;border-bottom:1px solid var(--line);}
@@ -211,7 +206,7 @@ a:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--
 @media (prefers-reduced-motion:reduce){.marquee-track{animation:none;}}
 
 /* ---------- statement band (крупный акцент) ---------- */
-.statement{position:relative;overflow:hidden;background:radial-gradient(60% 120% at 12% 50%,rgba(229,83,43,0.12),transparent 60%);}
+.statement{position:relative;overflow:hidden;}
 .statement h2{font-family:var(--font-display);font-weight:300;font-size:clamp(38px,7vw,92px);letter-spacing:-0.04em;line-height:1.0;max-width:16ch;}
 .statement h2 em{font-style:normal;color:var(--accent);}
 .statement .meta{margin-bottom:22px;}
